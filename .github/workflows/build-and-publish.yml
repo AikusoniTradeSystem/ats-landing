@@ -1,0 +1,42 @@
+name: CI/CD Pipeline
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish-docker-hub:
+    name: Build and Publish Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Get Git commit SHA for versioning
+        id: vars
+        run: |
+          echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker image
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --build-arg VERSION=${{ github.ref_name }} \
+            --tag aikusoni/ats-landing:${{ github.ref_name }} \
+            --tag aikusoni/ats-landing:latest \
+            --push .
