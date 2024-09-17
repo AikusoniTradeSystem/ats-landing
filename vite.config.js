@@ -30,11 +30,7 @@ export default defineConfig(({ mode }) => {
             react()
         ],
         build: {
-            outDir: '../release/portal',
-            modulePreload: false,
-            target: "esnext",
-            minify: false,
-            cssCodeSplit: false,
+            outDir: '/app/dist'
         }
     };
 });
