@@ -40,8 +40,8 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
-            --tag aikusoni/ats-landing:${{ github.ref_name }} \
-            --tag aikusoni/ats-landing:latest \
+            --build-arg VERSION=${{ github.ref_name }} \
+            --tag aikusoni/ats-landing:develop \
             --push .
 
       - name: Build and Push Docker image (release)
