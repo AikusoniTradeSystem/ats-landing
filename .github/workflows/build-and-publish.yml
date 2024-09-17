@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Docker image (develop)
-        if: "${{ github.ref_name == 'develop' }}"
+        if: "${{ github.ref == 'refs/heads/develop' }}"
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
